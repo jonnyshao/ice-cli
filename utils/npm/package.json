@@ -1,0 +1,34 @@
+{
+  "name": "@ice-cli/npm",
+  "version": "0.0.0",
+  "description": "get npm info",
+  "author": "jonny <jonnyshao@163.com>",
+  "homepage": "https://github.com/jonnyshao/ice-cli#readme",
+  "license": "ISC",
+  "main": "lib/index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "publishConfig": {
+    "registry": "https://repo.huaweicloud.com/repository/npm/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jonnyshao/ice-cli.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "bugs": {
+    "url": "https://github.com/jonnyshao/ice-cli/issues"
+  },
+  "dependencies": {
+    "axios": "^0.27.2",
+    "semver": "^7.3.7",
+    "url-join": "4"
+  }
+}
