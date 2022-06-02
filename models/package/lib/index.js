@@ -4,9 +4,10 @@ const pkgDir = require('pkg-dir').sync;
 const path = require('path');
 const pathExists = require('path-exists');
 const npminstall = require('npminstall');
-
+const fse = require('fs-extra');
 const formatPath = require('@ice-cli/format-path');
 const { getDefaultRegistry, getNpmlatestVersion } = require('@ice-cli/npm');
+
 class Package {
   constructor(options = {}) {
     // package的路径
@@ -17,10 +18,14 @@ class Package {
     this.packageName = options.packageName;
     // package的version
     this.packageVersion = options.packageVersion;
-
+    // windows \ path handler
     this.cacheFilePathPrefix = this.packageName.replace('/', '_');
   }
   async prepare() {
+    // 创建用户路径
+    if (this.storeDir && !pathExists(this.storeDir)) {
+      fse.mkdirSync(this.storeDir);
+    }
     if (this.packageVersion === 'latest') {
       this.packageVersion = await getNpmlatestVersion(this.packageName);
     }
@@ -51,8 +56,27 @@ class Package {
       pkgs: [{ name: this.packageName, version: this.packageVersion }],
     });
   }
+  getSpecificCacheFilePath(pv) {
+    return path.resolve(this.storeDir, `_${this.cacheFilePathPrefix}@${pv}@${this.packageName}}`);
+  }
   // 更新Package
-  update() {}
+  async update() {
+    await this.prepare();
+    // 获取最新npm版本号
+    const latestVersion = await getNpmlatestVersion(this.packageName);
+    // 查询最新版本号对应的路径是否存在
+    const latestFielPath = this.getSpecificCacheFilePath(latestVersion);
+    // 如果不存在，则直接安装最新版本
+    if (!pathExists(latestFielPath)) {
+      npminstall({
+        root: this.targetPath,
+        storeDir: this.storeDir,
+        registry: getDefaultRegistry(),
+        pkgs: [{ name: this.packageName, version: latestVersion }],
+      });
+    }
+    return latestFielPath;
+  }
   // 获取入口文件路径
   getRootFile() {
     function _getRootPath(targetPath) {

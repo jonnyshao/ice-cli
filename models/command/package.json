@@ -1,5 +1,5 @@
 {
-  "name": "@ice-cli/package",
+  "name": "@ice-cli/command",
   "version": "0.0.0",
   "description": "> TODO: description",
   "author": "jonny <jonnyshao@163.com>",
@@ -27,12 +27,9 @@
     "url": "https://github.com/jonnyshao/ice-cli/issues"
   },
   "dependencies": {
-    "@ice-cli/format-path": "file:../../utils/format-path",
-    "@ice-cli/npm": "file:../../utils/npm",
-    "@ice-cli/utils": "file:../../utils/utils",
-    "fs-extra": "^10.1.0",
-    "npminstall": "^6.2.0",
-    "path-exists": "^4.0.0",
-    "pkg-dir": "^5.0.0"
+    "semver": "^7.3.7",
+    "colors": "^1.4.0",
+    "@ice-cli/log": "file:../../utils/log",
+    "@ice-cli/utils": "file:../../utils/utils"
   }
 }

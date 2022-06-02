@@ -25,5 +25,9 @@
   },
   "bugs": {
     "url": "https://github.com/jonnyshao/ice-cli/issues"
+  },
+  "dependencies": {
+    "@ice-cli/command": "file:../../models/command",
+    "@ice-cli/log": "file:../../utils/log"
   }
 }

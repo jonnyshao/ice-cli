@@ -1,6 +1,7 @@
 'use strict';
 
 const path = require('path');
+const cp = require('child_process');
 
 const Package = require('@ice-cli/package');
 const log = require('@ice-cli/log');
@@ -9,8 +10,6 @@ const SETTINGS = {
   // init: '@ice-cli/init',
   init: 'wefetch',
 };
-
-module.exports = exec;
 
 const CACHE_DIR = 'dependencies';
 
@@ -38,7 +37,7 @@ async function exec() {
     });
 
     if (await pkg.exists()) {
-      console.log('更新package');
+      await pkg.update();
     } else {
       await pkg.install();
     }
@@ -49,9 +48,43 @@ async function exec() {
       packageName,
       packageVersion,
     });
-    const rootFiel = pkg.getRootFile();
+    const rootFile = pkg.getRootFile();
 
-    rootFiel && require(rootFiel).apply(null, arguments);
+    if (rootFile) {
+      try {
+        //  require(rootFile).call(null, Array.from(arguments));
+        let args = Array.from(arguments);
+        const cmd = args[args.length - 1];
+
+        // const o = Object.create(null);
+        // Object.keys(cmd).forEach((key) => {
+        //   if (cmd.hasOwnProperty(key) && !key.startsWith('_') && key !== 'parent') {
+        //     o[key] = cmd[key];
+        //   }
+        // });
+        args = [args[0], cmd.opts()];
+
+        const code = `require('${rootFile}').call(null, ${JSON.stringify(args)})`;
+        const child = spawn('node', ['-e', code], { cwd: process.cwd(), stdio: 'inherit' });
+        child.on('error', (e) => {
+          log.error(e.message);
+          process.exit(1);
+        });
+        child.on('exit', (e) => {
+          log.verbose('命令执行成功', e);
+          process.exit(e);
+        });
+      } catch (err) {
+        log.error(err.message);
+      }
+    }
+  }
+
+  function spawn(comand, args, options) {
+    const win32 = process.platform == 'win32';
+    const cmd = win32 ? 'cmd' : comand;
+    const cmdArgas = win32 ? ['/c'].concat(comand, args) : args;
+    return cp.spawn(cmd, cmdArgas, options || {});
   }
 
   // TODO
@@ -60,3 +93,5 @@ async function exec() {
   // Package.getRootFile()
   // Package.update / Package
 }
+
+module.exports = exec;

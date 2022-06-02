@@ -28,7 +28,6 @@ async function ice() {
 
 async function prepare() {
   checkPkgVersion();
-  checkNodeVersion();
   checkRootAndDown();
   checkUserHome();
   checkEnv();
