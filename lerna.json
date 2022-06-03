@@ -1,4 +1,4 @@
 {
-  "packages": ["core/*", "utils/*", "command/*", "models/*"],
+  "packages": ["core/*", "utils/*", "commands/*", "models/*"],
   "version": "0.0.0"
 }

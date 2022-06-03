@@ -23,6 +23,10 @@ async function ice() {
     registerCommand();
   } catch (e) {
     log.error(e.message);
+
+    if (process.env.LOG_LEVEL == 'verbose') {
+      console.log(e);
+    }
   }
 }
 
@@ -94,7 +98,7 @@ async function checkGlobalUpdate() {
   const cv = pkg.version;
   const pkname = pkg.name;
   const { getNpmlatestVersion } = require('@ice-cli/npm');
-  const lastVersion = await getNpmlatestVersion('1.0.0', pkname);
+  const lastVersion = await getNpmlatestVersion(pkname);
   if (lastVersion && semver.gt(lastVersion, cv)) {
     log.warn(
       colors.yellow(

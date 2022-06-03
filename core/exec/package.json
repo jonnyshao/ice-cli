@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "@ice-cli/log": "file:../../utils/log",
-    "@ice-cli/package": "file:../../models/package"
+    "@ice-cli/package": "file:../../models/package",
+    "@ice-cli/utils": "file:../../utils/utils"
   }
 }

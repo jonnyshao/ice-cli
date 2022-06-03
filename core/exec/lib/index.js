@@ -1,10 +1,10 @@
 'use strict';
 
 const path = require('path');
-const cp = require('child_process');
 
 const Package = require('@ice-cli/package');
 const log = require('@ice-cli/log');
+const { execShell } = require('@ice-cli/utils');
 
 const SETTINGS = {
   // init: '@ice-cli/init',
@@ -52,20 +52,11 @@ async function exec() {
 
     if (rootFile) {
       try {
-        //  require(rootFile).call(null, Array.from(arguments));
         let args = Array.from(arguments);
         const cmd = args[args.length - 1];
-
-        // const o = Object.create(null);
-        // Object.keys(cmd).forEach((key) => {
-        //   if (cmd.hasOwnProperty(key) && !key.startsWith('_') && key !== 'parent') {
-        //     o[key] = cmd[key];
-        //   }
-        // });
         args = [args[0], cmd.opts()];
-
         const code = `require('${rootFile}').call(null, ${JSON.stringify(args)})`;
-        const child = spawn('node', ['-e', code], { cwd: process.cwd(), stdio: 'inherit' });
+        const child = execShell('node', ['-e', code], { cwd: process.cwd(), stdio: 'inherit' });
         child.on('error', (e) => {
           log.error(e.message);
           process.exit(1);
@@ -80,12 +71,12 @@ async function exec() {
     }
   }
 
-  function spawn(comand, args, options) {
-    const win32 = process.platform == 'win32';
-    const cmd = win32 ? 'cmd' : comand;
-    const cmdArgas = win32 ? ['/c'].concat(comand, args) : args;
-    return cp.spawn(cmd, cmdArgas, options || {});
-  }
+  // function spawn(comand, args, options) {
+  //   const win32 = process.platform == 'win32';
+  //   const cmd = win32 ? 'cmd' : comand;
+  //   const cmdArgas = win32 ? ['/c'].concat(comand, args) : args;
+  //   return cp.spawn(cmd, cmdArgas, options || {});
+  // }
 
   // TODO
   // targetPath => modulePath

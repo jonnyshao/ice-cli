@@ -35,7 +35,7 @@ function getDefaultRegistry(isOriginal = false) {
 //   return versions.filter((v) => semver.satisfies(v, `^${pkVersion}`));
 // }
 
-async function getNpmlatestVersion(pkVersion, pkName, registry) {
+async function getNpmlatestVersion(pkName, registry) {
   const versions = await getNpmVersions(pkName, registry);
   if (versions && versions.length) {
     return semver.gt(versions[0], versions[1]) ? versions[0] : versions[versions.length - 1];

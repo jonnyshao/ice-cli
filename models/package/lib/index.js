@@ -34,14 +34,15 @@ class Package {
   get cacheFilePath() {
     return path.resolve(
       this.storeDir,
-      `_${this.cacheFilePathPrefix}@${this.packageVersion}@${this.packageName}}`
+      `_${this.cacheFilePathPrefix}@${this.packageVersion}@${this.packageName}`
     );
   }
+
   //   判断当前Package
   async exists() {
     if (this.storeDir) {
       await this.prepare();
-      return pathExists(this.cacheFilePathPrefix);
+      return pathExists(this.cacheFilePath);
     } else {
       return pathExists(this.targetPath);
     }
@@ -74,8 +75,10 @@ class Package {
         registry: getDefaultRegistry(),
         pkgs: [{ name: this.packageName, version: latestVersion }],
       });
+      this.packageVersion = latestVersion;
+    } else {
+      this.packageVersion = latestVersion;
     }
-    return latestFielPath;
   }
   // 获取入口文件路径
   getRootFile() {
